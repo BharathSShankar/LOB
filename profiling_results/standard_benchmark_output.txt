@@ -1,0 +1,8 @@
+-----------------------------------------------------------------------------------------------
+Benchmark                                     Time             CPU   Iterations UserCounters...
+-----------------------------------------------------------------------------------------------
+BM_ProcessSingleOrder                      13.0 ns         13.0 ns     54060316 items_per_second=77.1738M/s
+BM_OrderMatching                            494 ns          493 ns      1367855 items_per_second=2.02968M/s
+BM_HighThroughput/iterations:1000000       16.8 ns         16.7 ns      1000000 items_per_second=59.9772M/s
+BM_ObjectPoolAllocation                    3.15 ns         3.14 ns    225990160 items_per_second=318.758M/s
+BM_HeapAllocation                          19.7 ns         19.5 ns     36361747 items_per_second=51.1631M/s

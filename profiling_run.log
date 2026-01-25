@@ -1,0 +1,241 @@
+[0;34m=============================================[0m
+[0;34m  LOB Profiling & Optimization Suite[0m
+[0;34m=============================================[0m
+
+Operating System: Darwin
+Project Root: /Users/bharathshankar/Documents/PersonalProjects/LOB
+
+[0;32m✓[0m Created results directory: /Users/bharathshankar/Documents/PersonalProjects/LOB/profiling_results
+
+[1;33m▶[0m STEP 1: Building project with profiling support
+-- Profiling enabled
+--   - Memory profiling: ON
+--   - Hot path profiling: ON
+-- git version: v1.8.3 normalized to 1.8.3
+-- Google Benchmark version: 1.8.3
+-- Enabling additional flags: -DINCLUDE_DIRECTORIES=/Users/bharathshankar/Documents/PersonalProjects/LOB/build_profiling/_deps/benchmark-src/include
+-- Performing Test HAVE_THREAD_SAFETY_ATTRIBUTES -- success
+-- Performing Test HAVE_STD_REGEX -- success
+-- Performing Test HAVE_GNU_POSIX_REGEX -- failed to compile
+-- Performing Test HAVE_POSIX_REGEX -- success
+-- Performing Test HAVE_STEADY_CLOCK -- success
+-- Performing Test HAVE_PTHREAD_AFFINITY -- failed to compile
+-- Build type: RelWithDebInfo
+-- C++ Standard: 20
+-- Compiler: AppleClang
+-- Configuring done (0.6s)
+-- Generating done (0.0s)
+-- Build files have been written to: /Users/bharathshankar/Documents/PersonalProjects/LOB/build_profiling
+[1/90] Linking CXX static library _deps/benchmark-build/test/liboutput_test_helper.a
+[2/90] Linking CXX static library lib/libgtest.a
+[3/90] Linking CXX static library lib/libgmock.a
+[4/90] Linking CXX static library lib/libgmock_main.a
+[5/90] Linking CXX static library lib/libgtest_main.a
+[6/90] Building CXX object _deps/benchmark-build/test/CMakeFiles/benchmark_min_time_flag_time_test.dir/benchmark_min_time_flag_time_test.cc.o
+[7/90] Building CXX object _deps/benchmark-build/test/CMakeFiles/diagnostics_test.dir/diagnostics_test.cc.o
+[8/90] Building CXX object _deps/benchmark-build/test/CMakeFiles/benchmark_setup_teardown_test.dir/benchmark_setup_teardown_test.cc.o
+[9/90] Building CXX object _deps/benchmark-build/test/CMakeFiles/benchmark_min_time_flag_iters_test.dir/benchmark_min_time_flag_iters_test.cc.o
+[10/90] Building CXX object _deps/benchmark-build/test/CMakeFiles/basic_test.dir/basic_test.cc.o
+[11/90] Building CXX object _deps/benchmark-build/test/CMakeFiles/filter_test.dir/filter_test.cc.o
+[12/90] Building CXX object _deps/benchmark-build/test/CMakeFiles/options_test.dir/options_test.cc.o
+[13/90] Building CXX object _deps/benchmark-build/test/CMakeFiles/donotoptimize_test.dir/donotoptimize_test.cc.o
+[14/90] Building CXX object _deps/benchmark-build/test/CMakeFiles/link_main_test.dir/link_main_test.cc.o
+[15/90] Building CXX object CMakeFiles/lob_benchmark.dir/benchmarks/MatchingEngineBenchmark.cpp.o
+[16/90] Building CXX object _deps/benchmark-build/test/CMakeFiles/fixture_test.dir/fixture_test.cc.o
+[17/90] Building CXX object CMakeFiles/lob_lib.dir/src/profiling/MemoryProfiler.cpp.o
+[18/90] Building CXX object _deps/benchmark-build/test/CMakeFiles/map_test.dir/map_test.cc.o
+[19/90] Linking CXX static library liblob_lib.a
+[20/90] Building CXX object _deps/benchmark-build/test/CMakeFiles/skip_with_error_test.dir/skip_with_error_test.cc.o
+[21/90] Building CXX object _deps/benchmark-build/test/CMakeFiles/multiple_ranges_test.dir/multiple_ranges_test.cc.o
+[22/90] Building CXX object _deps/benchmark-build/test/CMakeFiles/repetitions_test.dir/repetitions_test.cc.o
+[23/90] Building CXX object _deps/benchmark-build/test/CMakeFiles/templated_fixture_test.dir/templated_fixture_test.cc.o
+[24/90] Building CXX object CMakeFiles/lob_profiling_benchmark.dir/benchmarks/ProfilingBenchmark.cpp.o
+[25/90] Building CXX object _deps/benchmark-build/test/CMakeFiles/args_product_test.dir/args_product_test.cc.o
+[26/90] Building CXX object _deps/benchmark-build/test/CMakeFiles/register_benchmark_test.dir/register_benchmark_test.cc.o
+[27/90] Building CXX object _deps/benchmark-build/test/CMakeFiles/report_aggregates_only_test.dir/report_aggregates_only_test.cc.o
+[28/90] Building CXX object _deps/benchmark-build/test/CMakeFiles/display_aggregates_only_test.dir/display_aggregates_only_test.cc.o
+[29/90] Building CXX object _deps/benchmark-build/test/CMakeFiles/cxx03_test.dir/cxx03_test.cc.o
+[30/90] Building CXX object _deps/benchmark-build/test/CMakeFiles/internal_threading_test.dir/internal_threading_test.cc.o
+[31/90] Building CXX object _deps/benchmark-build/test/CMakeFiles/perf_counters_test.dir/perf_counters_test.cc.o
+[32/90] Building CXX object _deps/benchmark-build/test/CMakeFiles/memory_manager_test.dir/memory_manager_test.cc.o
+[33/90] Building CXX object _deps/benchmark-build/test/CMakeFiles/complexity_test.dir/complexity_test.cc.o
+[34/90] Building CXX object _deps/benchmark-build/test/CMakeFiles/user_counters_thousands_test.dir/user_counters_thousands_test.cc.o
+[35/90] Building CXX object _deps/benchmark-build/test/CMakeFiles/benchmark_name_gtest.dir/benchmark_name_gtest.cc.o
+[36/90] Linking CXX executable lob_matching_engine
+[37/90] Building CXX object _deps/benchmark-build/test/CMakeFiles/statistics_gtest.dir/statistics_gtest.cc.o
+[38/90] Linking CXX executable lob_benchmark
+[39/90] Linking CXX executable lob_profiling_benchmark
+[40/90] Linking CXX executable _deps/benchmark-build/test/benchmark_test
+[41/90] Linking CXX executable _deps/benchmark-build/test/spec_arg_test
+[42/90] Linking CXX executable _deps/benchmark-build/test/spec_arg_verbosity_test
+[43/90] Linking CXX executable _deps/benchmark-build/test/benchmark_setup_teardown_test
+[44/90] Building CXX object _deps/benchmark-build/test/CMakeFiles/benchmark_random_interleaving_gtest.dir/benchmark_random_interleaving_gtest.cc.o
+[45/90] Linking CXX executable _deps/benchmark-build/test/filter_test
+[46/90] Linking CXX executable _deps/benchmark-build/test/benchmark_min_time_flag_time_test
+[47/90] Building CXX object _deps/benchmark-build/test/CMakeFiles/time_unit_gtest.dir/time_unit_gtest.cc.o
+[48/90] Linking CXX executable _deps/benchmark-build/test/benchmark_min_time_flag_iters_test
+[49/90] Linking CXX executable _deps/benchmark-build/test/options_test
+[50/90] Linking CXX executable _deps/benchmark-build/test/basic_test
+[51/90] Linking CXX executable _deps/benchmark-build/test/repetitions_test
+[52/90] Linking CXX executable _deps/benchmark-build/test/diagnostics_test
+[53/90] Building CXX object _deps/benchmark-build/test/CMakeFiles/user_counters_test.dir/user_counters_test.cc.o
+[54/90] Linking CXX executable lob_tests
+ld: warning: ignoring duplicate libraries: 'lib/libgtest.a'
+[55/90] Linking CXX executable _deps/benchmark-build/test/skip_with_error_test
+[56/90] Linking CXX executable _deps/benchmark-build/test/donotoptimize_test
+[57/90] Linking CXX executable _deps/benchmark-build/test/fixture_test
+[58/90] Linking CXX executable _deps/benchmark-build/test/register_benchmark_test
+[59/90] Linking CXX executable _deps/benchmark-build/test/multiple_ranges_test
+[60/90] Linking CXX executable _deps/benchmark-build/test/map_test
+[61/90] Linking CXX executable _deps/benchmark-build/test/args_product_test
+[62/90] Linking CXX executable _deps/benchmark-build/test/link_main_test
+[63/90] Linking CXX executable _deps/benchmark-build/test/templated_fixture_test
+[64/90] Linking CXX executable _deps/benchmark-build/test/user_counters_test
+[65/90] Linking CXX executable _deps/benchmark-build/test/perf_counters_test
+[66/90] Linking CXX executable _deps/benchmark-build/test/internal_threading_test
+[67/90] Linking CXX executable _deps/benchmark-build/test/report_aggregates_only_test
+[68/90] Linking CXX executable _deps/benchmark-build/test/display_aggregates_only_test
+[69/90] Linking CXX executable _deps/benchmark-build/test/user_counters_thousands_test
+[70/90] Linking CXX executable _deps/benchmark-build/test/memory_manager_test
+[71/90] Linking CXX executable _deps/benchmark-build/test/cxx03_test
+[72/90] Linking CXX executable _deps/benchmark-build/test/complexity_test
+[73/90] Linking CXX executable _deps/benchmark-build/test/benchmark_name_gtest
+[74/90] Linking CXX executable _deps/benchmark-build/test/benchmark_random_interleaving_gtest
+[75/90] Linking CXX executable _deps/benchmark-build/test/statistics_gtest
+[76/90] Linking CXX executable _deps/benchmark-build/test/time_unit_gtest
+[77/90] Building CXX object _deps/benchmark-build/test/CMakeFiles/min_time_parse_gtest.dir/min_time_parse_gtest.cc.o
+[78/90] Linking CXX executable _deps/benchmark-build/test/min_time_parse_gtest
+[79/90] Building CXX object _deps/benchmark-build/test/CMakeFiles/commandlineflags_gtest.dir/commandlineflags_gtest.cc.o
+[80/90] Building CXX object _deps/benchmark-build/test/CMakeFiles/user_counters_tabular_test.dir/user_counters_tabular_test.cc.o
+[81/90] Linking CXX executable _deps/benchmark-build/test/commandlineflags_gtest
+[82/90] Linking CXX executable _deps/benchmark-build/test/user_counters_tabular_test
+[83/90] Building CXX object _deps/benchmark-build/test/CMakeFiles/string_util_gtest.dir/string_util_gtest.cc.o
+[84/90] Linking CXX executable _deps/benchmark-build/test/string_util_gtest
+[85/90] Building CXX object _deps/benchmark-build/test/CMakeFiles/perf_counters_gtest.dir/perf_counters_gtest.cc.o
+[86/90] Linking CXX executable _deps/benchmark-build/test/perf_counters_gtest
+[87/90] Building CXX object _deps/benchmark-build/test/CMakeFiles/reporter_output_test.dir/reporter_output_test.cc.o
+[88/90] Linking CXX executable _deps/benchmark-build/test/reporter_output_test
+[89/90] Building CXX object _deps/benchmark-build/test/CMakeFiles/benchmark_gtest.dir/benchmark_gtest.cc.o
+[90/90] Linking CXX executable _deps/benchmark-build/test/benchmark_gtest
+[0;32m✓[0m Build complete
+
+[1;33m▶[0m STEP 2: Running custom profiling benchmarks
+Unable to determine clock rate from sysctl: hw.cpufrequency: No such file or directory
+This does not affect benchmark measurements, only the metadata output.
+***WARNING*** Failed to set thread affinity. Estimated CPU frequency may be incorrect.
+2026-01-25T21:13:53+05:30
+Running ./lob_profiling_benchmark
+Run on (10 X 24 MHz CPU s)
+CPU Caches:
+  L1 Data 64 KiB
+  L1 Instruction 128 KiB
+  L2 Unified 4096 KiB (x10)
+Load Average: 8.42, 3.68, 2.71
+------------------------------------------------------------------------------------------------------------
+Benchmark                                                  Time             CPU   Iterations UserCounters...
+------------------------------------------------------------------------------------------------------------
+BM_ProfilingOrderProcessing/iterations:100000            185 ns          183 ns       100000 items_per_second=5.46001M/s
+BM_ProfilingOrderMatching/iterations:50000               578 ns          575 ns        50000 items_per_second=1.73865M/s
+BM_ProfilingHighThroughput/iterations:100000             196 ns          193 ns       100000 items_per_second=5.18995M/s
+BM_ProfilingAllocationOverhead/iterations:1000000       35.5 ns         35.3 ns      1000000 items_per_second=28.3407M/s
+
+
+===============================================
+          PROFILING REPORTS                    
+===============================================
+
+=== Memory Profiling Report ===
+
+Overall Statistics:
+  Total Allocations:        1000000
+  Total Deallocations:      1000000
+  Net Allocations:                0
+
+Memory Statistics:
+  Total Allocated:         48000000 bytes (45.7764 MB)
+  Total Deallocated:       48000000 bytes (45.7764 MB)
+  Current Memory:                 0 bytes (0 MB)
+  Peak Memory:                   48 bytes (4.57764e-05 MB)
+
+Memory Efficiency:
+  Average Allocation Size: 48 bytes
+  Memory Leak Indicator:   0 unfreed allocations
+
+===============================
+
+=== Hot Path Profiling Report ===
+
+Path                                 Calls     Total (ms)       Avg (ns)       Min (ns)       Max (ns)       P50 (ns)       P95 (ns)       P99 (ns)
+-------------------------------------------------------------------------------------------------------------------------------------------------------------
+high_throughput_order               100000         17.287            172              0          88833            125            459           1000
+
+Insights:
+  ⚠️  'high_throughput_order' shows high variance (range: 88833 ns, avg: 172 ns)
+
+=================================
+
+📊 Memory report saved to: profiling_memory_report.txt
+📊 Hot path report saved to: profiling_hotpath_report.txt
+📊 JSON summary saved to: profiling_summary.json
+
+===============================================
+
+[0;32m✓[0m Custom benchmarks complete
+
+[1;33m▶[0m STEP 3: Running standard benchmarks
+Unable to determine clock rate from sysctl: hw.cpufrequency: No such file or directory
+This does not affect benchmark measurements, only the metadata output.
+***WARNING*** Failed to set thread affinity. Estimated CPU frequency may be incorrect.
+2026-01-25T21:13:55+05:30
+Running ./lob_benchmark
+Run on (10 X 24 MHz CPU s)
+CPU Caches:
+  L1 Data 64 KiB
+  L1 Instruction 128 KiB
+  L2 Unified 4096 KiB (x10)
+Load Average: 8.42, 3.68, 2.71
+-----------------------------------------------------------------------------------------------
+Benchmark                                     Time             CPU   Iterations UserCounters...
+-----------------------------------------------------------------------------------------------
+BM_ProcessSingleOrder                      13.0 ns         13.0 ns     54060316 items_per_second=77.1738M/s
+BM_OrderMatching                            494 ns          493 ns      1367855 items_per_second=2.02968M/s
+BM_HighThroughput/iterations:1000000       16.8 ns         16.7 ns      1000000 items_per_second=59.9772M/s
+BM_ObjectPoolAllocation                    3.15 ns         3.14 ns    225990160 items_per_second=318.758M/s
+BM_HeapAllocation                          19.7 ns         19.5 ns     36361747 items_per_second=51.1631M/s
+[0;32m✓[0m Standard benchmarks complete
+
+[1;33m▶[0m STEP 4: Running macOS Instruments profiling
+[1;33m⚠[0m Instruments not found (requires Xcode Command Line Tools)
+
+Running heap analysis...
+[0;32m✓[0m Heap analysis complete
+
+[1;33m▶[0m STEP 5: Running heap profiling with gperftools
+[1;33m⚠[0m gperftools not found. Install with: sudo apt-get install google-perftools
+
+[1;33m▶[0m STEP 6: Collecting generated reports
+[0;32m✓[0m Copied memory profiling report
+[0;32m✓[0m Copied hot path profiling report
+[0;32m✓[0m Copied profiling summary JSON
+
+[1;33m▶[0m STEP 7: Generating master profiling report
+[0;32m✓[0m Master report generated: /Users/bharathshankar/Documents/PersonalProjects/LOB/profiling_results/PROFILING_MASTER_REPORT.md
+
+[0;34m=============================================[0m
+[0;34m  Profiling Complete![0m
+[0;34m=============================================[0m
+
+Results saved to: /Users/bharathshankar/Documents/PersonalProjects/LOB/profiling_results
+
+Quick access:
+  Master Report: /Users/bharathshankar/Documents/PersonalProjects/LOB/profiling_results/PROFILING_MASTER_REPORT.md
+  Memory Report: /Users/bharathshankar/Documents/PersonalProjects/LOB/profiling_results/profiling_memory_report.txt
+  Hot Path Report: /Users/bharathshankar/Documents/PersonalProjects/LOB/profiling_results/profiling_hotpath_report.txt
+  JSON Summary: /Users/bharathshankar/Documents/PersonalProjects/LOB/profiling_results/profiling_summary.json
+
+[0;32mNext steps:[0m
+  1. Review the master report: less /Users/bharathshankar/Documents/PersonalProjects/LOB/profiling_results/PROFILING_MASTER_REPORT.md
+  2. Analyze hot paths and memory usage
+  3. Apply optimizations
+  4. Re-run profiling to validate improvements
+

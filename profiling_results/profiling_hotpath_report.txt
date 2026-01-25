@@ -1,0 +1,11 @@
+
+=== Hot Path Profiling Report ===
+
+Path                                 Calls     Total (ms)       Avg (ns)       Min (ns)       Max (ns)       P50 (ns)       P95 (ns)       P99 (ns)
+-------------------------------------------------------------------------------------------------------------------------------------------------------------
+high_throughput_order               100000         17.287            172              0          88833            125            459           1000
+
+Insights:
+  ⚠️  'high_throughput_order' shows high variance (range: 88833 ns, avg: 172 ns)
+
+=================================

@@ -1,0 +1,49 @@
+------------------------------------------------------------------------------------------------------------
+Benchmark                                                  Time             CPU   Iterations UserCounters...
+------------------------------------------------------------------------------------------------------------
+BM_ProfilingOrderProcessing/iterations:100000            185 ns          183 ns       100000 items_per_second=5.46001M/s
+BM_ProfilingOrderMatching/iterations:50000               578 ns          575 ns        50000 items_per_second=1.73865M/s
+BM_ProfilingHighThroughput/iterations:100000             196 ns          193 ns       100000 items_per_second=5.18995M/s
+BM_ProfilingAllocationOverhead/iterations:1000000       35.5 ns         35.3 ns      1000000 items_per_second=28.3407M/s
+
+
+===============================================
+          PROFILING REPORTS                    
+===============================================
+
+=== Memory Profiling Report ===
+
+Overall Statistics:
+  Total Allocations:        1000000
+  Total Deallocations:      1000000
+  Net Allocations:                0
+
+Memory Statistics:
+  Total Allocated:         48000000 bytes (45.7764 MB)
+  Total Deallocated:       48000000 bytes (45.7764 MB)
+  Current Memory:                 0 bytes (0 MB)
+  Peak Memory:                   48 bytes (4.57764e-05 MB)
+
+Memory Efficiency:
+  Average Allocation Size: 48 bytes
+  Memory Leak Indicator:   0 unfreed allocations
+
+===============================
+
+=== Hot Path Profiling Report ===
+
+Path                                 Calls     Total (ms)       Avg (ns)       Min (ns)       Max (ns)       P50 (ns)       P95 (ns)       P99 (ns)
+-------------------------------------------------------------------------------------------------------------------------------------------------------------
+high_throughput_order               100000         17.287            172              0          88833            125            459           1000
+
+Insights:
+  ⚠️  'high_throughput_order' shows high variance (range: 88833 ns, avg: 172 ns)
+
+=================================
+
+📊 Memory report saved to: profiling_memory_report.txt
+📊 Hot path report saved to: profiling_hotpath_report.txt
+📊 JSON summary saved to: profiling_summary.json
+
+===============================================
+

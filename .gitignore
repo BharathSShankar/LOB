@@ -1,0 +1,65 @@
+# Build directories
+build/
+cmake-build-*/
+out/
+build_coverage/
+build_profiling/
+
+# IDE specific
+.vscode/.vs/
+.vscode/ipch/
+*.code-workspace
+
+# Compiler outputs
+*.o
+*.obj
+*.exe
+*.out
+*.app
+*.i*86
+*.x86_64
+*.hex
+
+# Libraries
+*.lib
+*.a
+*.la
+*.lo
+*.dll
+*.so
+*.so.*
+*.dylib
+
+# CMake
+CMakeCache.txt
+CMakeFiles/
+CMakeScripts/
+cmake_install.cmake
+install_manifest.txt
+compile_commands.json
+CTestTestfile.cmake
+_deps
+
+# Testing
+Testing/
+*.gcda
+*.gcno
+*.gcov
+coverage/
+*.profraw
+*.profdata
+
+# System files
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*~
+.cache/
+
+# Benchmark results
+*.json
+benchmarks/results/
+
+# Visualization outputs
+screenshots/

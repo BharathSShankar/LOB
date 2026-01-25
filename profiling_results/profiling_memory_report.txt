@@ -1,0 +1,19 @@
+
+=== Memory Profiling Report ===
+
+Overall Statistics:
+  Total Allocations:        1000000
+  Total Deallocations:      1000000
+  Net Allocations:                0
+
+Memory Statistics:
+  Total Allocated:         48000000 bytes (45.7764 MB)
+  Total Deallocated:       48000000 bytes (45.7764 MB)
+  Current Memory:                 0 bytes (0 MB)
+  Peak Memory:                   48 bytes (4.57764e-05 MB)
+
+Memory Efficiency:
+  Average Allocation Size: 48 bytes
+  Memory Leak Indicator:   0 unfreed allocations
+
+===============================
