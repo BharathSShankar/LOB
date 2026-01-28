@@ -34,6 +34,7 @@
 
 #include <cmath>
 #include <algorithm>
+#include <iostream>
 
 namespace lob::visualization
 {
@@ -144,12 +145,17 @@ namespace lob::visualization
 
         bool render_frame() override
         {
-            if (!is_running())
+            if (!window_)
+                return false;
+
+            // Poll events FIRST to keep window responsive on macOS
+            glfwPollEvents();
+
+            // Now check if window should close
+            if (!running_ || glfwWindowShouldClose(window_))
                 return false;
 
             auto frame_start = std::chrono::high_resolution_clock::now();
-
-            glfwPollEvents();
 
             // Start ImGui frame
             ImGui_ImplOpenGL3_NewFrame();

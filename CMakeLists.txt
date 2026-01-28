@@ -62,6 +62,14 @@ set(PROFILING_SOURCES
     src/profiling/HotPathProfiler.cpp
 )
 
+set(AGENT_SOURCES
+    src/agents/Agent.cpp
+    src/agents/NoiseTrader.cpp
+    src/agents/MarketMaker.cpp
+    src/agents/AgentZoo.cpp
+    src/agents/AgentOrchestrator.cpp
+)
+
 # Library with all sources
 add_library(lob_lib STATIC
     ${CORE_SOURCES}
@@ -69,6 +77,7 @@ add_library(lob_lib STATIC
     ${CONCURRENCY_SOURCES}
     ${MARKET_DATA_SOURCES}
     ${PROFILING_SOURCES}
+    ${AGENT_SOURCES}
 )
 
 target_include_directories(lob_lib PUBLIC ${CMAKE_SOURCE_DIR}/include)
@@ -98,6 +107,11 @@ set(TEST_SOURCES
     tests/core/MatchingEngineTest.cpp
     tests/memory/ObjectPoolTest.cpp
     tests/concurrency/RingBufferTest.cpp
+    tests/agents/AgentTest.cpp
+    tests/agents/NoiseTraderTest.cpp
+    tests/agents/MarketMakerTest.cpp
+    tests/agents/AgentZooTest.cpp
+    tests/agents/AgentOrchestratorTest.cpp
 )
 
 # Create test executable
@@ -171,9 +185,23 @@ endif()
 
 # Visualization (optional, requires GLFW and OpenGL)
 option(BUILD_VISUALIZATION "Build visualization tools" OFF)
+option(ENABLE_LIVE_WEBSOCKET "Enable live WebSocket streaming" OFF)
+
 if(BUILD_VISUALIZATION)
     find_package(OpenGL REQUIRED)
     find_package(glfw3 3.3 QUIET)
+    
+    # Check for libwebsockets
+    find_library(LIBWEBSOCKETS_LIB websockets)
+    find_path(LIBWEBSOCKETS_INCLUDE libwebsockets.h PATH_SUFFIXES include)
+    
+    if(LIBWEBSOCKETS_LIB AND LIBWEBSOCKETS_INCLUDE)
+        set(HAVE_LIBWEBSOCKETS TRUE)
+        message(STATUS "libwebsockets found: ${LIBWEBSOCKETS_LIB}")
+    else()
+        set(HAVE_LIBWEBSOCKETS FALSE)
+        message(STATUS "libwebsockets not found - live streaming disabled")
+    endif()
     
     if(glfw3_FOUND)
         message(STATUS "GLFW found, building visualization with OpenGL/ImGui")
@@ -197,10 +225,20 @@ if(BUILD_VISUALIZATION)
             ${imgui_SOURCE_DIR}/backends/imgui_impl_opengl3.cpp
         )
         
-        # Add visualization executable
-        add_executable(lob_depth_viewer
+        # Visualization source files
+        set(VIEWER_SOURCES
             src/visualization/DepthChartViewerGL.cpp
             src/visualization/main_viewer.cpp
+        )
+        
+        # Add live WebSocket source if available
+        if(HAVE_LIBWEBSOCKETS AND ENABLE_LIVE_WEBSOCKET)
+            list(APPEND VIEWER_SOURCES src/market_data/LiveWebSocketClient.cpp)
+        endif()
+        
+        # Add visualization executable
+        add_executable(lob_depth_viewer
+            ${VIEWER_SOURCES}
             ${IMGUI_SOURCES}
         )
         
@@ -217,6 +255,16 @@ if(BUILD_VISUALIZATION)
         )
         
         target_compile_definitions(lob_depth_viewer PRIVATE ENABLE_OPENGL_VIEWER)
+        
+        # Link libwebsockets if available
+        if(HAVE_LIBWEBSOCKETS AND ENABLE_LIVE_WEBSOCKET)
+            target_include_directories(lob_depth_viewer PRIVATE ${LIBWEBSOCKETS_INCLUDE})
+            target_link_libraries(lob_depth_viewer PRIVATE ${LIBWEBSOCKETS_LIB})
+            target_compile_definitions(lob_depth_viewer PRIVATE ENABLE_LIVE_WEBSOCKET)
+            message(STATUS "Live WebSocket streaming: ENABLED")
+        else()
+            message(STATUS "Live WebSocket streaming: DISABLED")
+        endif()
     else()
         message(STATUS "GLFW not found, building terminal-only visualization")
         

@@ -648,3 +648,18 @@ All 6 weeks of the implementation roadmap have been completed successfully:
 - Latency: 55 ns tick-to-trade (target: <1μs) - **18x better!**
 
 **Congratulations on completing the high-performance matching engine!** 🚀
+
+---
+
+## Extension: Agent-Based Market Simulation (ABMS)
+
+After completing the deterministic matching engine, we're extending it with intelligent trading agents that create realistic market dynamics. See [`ROADMAP_ABMS.md`](ROADMAP_ABMS.md) for the full 4-week plan.
+
+### Week 7: Foundation (IN PROGRESS)
+- [x] Agent base classes (Day 1-2) - ✅ [`Agent.h`](include/agents/Agent.h), [`Agent.cpp`](src/agents/Agent.cpp)
+- [x] Noise traders (Day 3-4) - ✅ [`NoiseTrader.h`](include/agents/NoiseTrader.h), [`NoiseTrader.cpp`](src/agents/NoiseTrader.cpp)
+- [x] Market makers (Day 5-7) - ✅ [`MarketMaker.h`](include/agents/MarketMaker.h), [`MarketMaker.cpp`](src/agents/MarketMaker.cpp)
+- [ ] Agent pool (Day 8-9)
+- [ ] Agent orchestrator (Day 10)
+
+**Status**: Core agent classes and tests implemented. Ready for Agent Zoo and Orchestrator.

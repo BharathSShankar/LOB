@@ -152,10 +152,15 @@ namespace lob::visualization
 
     /**
      * @brief Convert OrderBook to DepthChartSnapshot
+     * @param book The order book to snapshot
+     * @param levels Number of price levels to include
+     * @param price_divisor Divisor to convert internal price to display price (e.g., 100 for cents to dollars)
+     * @param quantity_divisor Divisor to convert internal quantity to display (e.g., 100000000 for satoshis to BTC)
      */
     inline DepthChartSnapshot create_snapshot(const core::OrderBook &book,
                                               size_t levels = 50,
-                                              uint64_t price_divisor = 100)
+                                              uint64_t price_divisor = 100,
+                                              double quantity_divisor = 1.0)
     {
         DepthChartSnapshot snapshot;
 
@@ -168,7 +173,7 @@ namespace lob::visualization
         {
             DepthPoint point;
             point.price = static_cast<double>(level.price) / price_divisor;
-            point.quantity = static_cast<double>(level.quantity) / 100000000.0; // satoshis to BTC
+            point.quantity = static_cast<double>(level.quantity) / quantity_divisor;
             cumulative += point.quantity;
             point.cumulative_quantity = cumulative;
             snapshot.bids.push_back(point);
@@ -180,7 +185,7 @@ namespace lob::visualization
         {
             DepthPoint point;
             point.price = static_cast<double>(level.price) / price_divisor;
-            point.quantity = static_cast<double>(level.quantity) / 100000000.0;
+            point.quantity = static_cast<double>(level.quantity) / quantity_divisor;
             cumulative += point.quantity;
             point.cumulative_quantity = cumulative;
             snapshot.asks.push_back(point);
