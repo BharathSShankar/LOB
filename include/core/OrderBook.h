@@ -87,6 +87,12 @@ namespace lob::core
         bool cancel_order(uint64_t order_id) noexcept;
 
         /**
+         * @brief Drain filled resting orders (pointers ready for pool release)
+         * Call after process_order to reclaim pool memory.
+         */
+        std::vector<Order *> drain_filled_orders() noexcept;
+
+        /**
          * @brief Get best bid price
          */
         std::optional<uint64_t> get_best_bid() const noexcept;
@@ -151,6 +157,9 @@ namespace lob::core
 
         // Fast order lookup by ID
         std::map<uint64_t, Order *> order_map_;
+
+        // Filled resting orders waiting to be released back to pool
+        std::vector<Order *> filled_orders_;
     };
 
 } // namespace lob::core

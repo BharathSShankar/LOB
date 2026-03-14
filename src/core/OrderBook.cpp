@@ -128,6 +128,13 @@ namespace lob::core
         return false; // Order not found in price level
     }
 
+    std::vector<Order *> OrderBook::drain_filled_orders() noexcept
+    {
+        std::vector<Order *> result;
+        result.swap(filled_orders_);
+        return result;
+    }
+
     std::optional<uint64_t> OrderBook::get_best_bid() const noexcept
     {
         // TODO (Week 1): Return highest bid price
@@ -243,6 +250,7 @@ namespace lob::core
                     {
                         order_map_.erase(resting->order_id);
                         orders_at_level.pop_front();
+                        filled_orders_.push_back(resting);
                     }
                 }
 
@@ -286,6 +294,7 @@ namespace lob::core
                     {
                         order_map_.erase(resting->order_id);
                         orders_at_level.pop_front();
+                        filled_orders_.push_back(resting);
                     }
                 }
 
@@ -332,6 +341,7 @@ namespace lob::core
                     {
                         order_map_.erase(resting->order_id);
                         orders_at_level.pop_front();
+                        filled_orders_.push_back(resting);
                     }
                 }
 
@@ -362,6 +372,7 @@ namespace lob::core
                     {
                         order_map_.erase(resting->order_id);
                         orders_at_level.pop_front();
+                        filled_orders_.push_back(resting);
                     }
                 }
 

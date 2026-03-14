@@ -89,11 +89,24 @@ namespace lob
                 quantity = 1;
             }
 
-            // Create order (allocated from pool externally, so we return nullptr here)
-            // In actual implementation, this would be allocated from an ObjectPool
-            // For now, we'll return nullptr and this will be handled by the orchestrator
-            // NOTE: This needs to be integrated with memory::ObjectPool<Order>
-            return nullptr;
+            // Allocate Order from the shared pool injected by the orchestrator
+            core::Order *order = alloc_order();
+            if (!order)
+                return nullptr; // Pool exhausted
+
+            uint64_t fixed_price = static_cast<uint64_t>(price * 100.0);
+            if (fixed_price == 0)
+                fixed_price = 1;
+
+            *order = core::Order(order_id_counter()++, /*timestamp=*/0,
+                                 fixed_price,
+                                 static_cast<uint64_t>(quantity),
+                                 side,
+                                 core::OrderType::LIMIT);
+
+            // Update position tracking (approximate; real fill callback pending)
+            position_.update(side, quantity, price);
+            return order;
         }
 
         void NoiseTrader::initialize(uint64_t agent_id, const AgentConfig &config)

@@ -2,6 +2,8 @@
 
 #include "MarketState.h"
 #include "../core/Order.h"
+#include "../memory/ObjectPool.h"
+#include <atomic>
 #include <cstdint>
 #include <unordered_map>
 #include <string>
@@ -162,12 +164,48 @@ namespace lob
              */
             void activate() { active_ = true; }
 
+            /**
+             * @brief Wire the shared order-pool into the agent.
+             *
+             * Called by AgentOrchestrator before every tick.  The pool
+             * must outlive the agent; no ownership is transferred.
+             */
+            void set_order_pool(memory::ObjectPool<core::Order, 10000> *pool)
+            {
+                order_pool_ = pool;
+            }
+
         protected:
             uint64_t agent_id_{0}; ///< Unique agent identifier
             AgentType type_;       ///< Agent type
             bool active_{true};    ///< Whether agent can trade
             Position position_;    ///< Current inventory position
             AgentConfig config_;   ///< Agent configuration
+
+            /// Pointer to the shared order pool (set by orchestrator)
+            memory::ObjectPool<core::Order, 10000> *order_pool_{nullptr};
+
+            /**
+             * @brief Allocate one Order from the shared pool.
+             * @return Pointer to a fresh Order, or nullptr if pool is exhausted
+             *         or has not been set yet.
+             */
+            core::Order *alloc_order() const noexcept
+            {
+                return order_pool_ ? order_pool_->acquire() : nullptr;
+            }
+
+            /**
+             * @brief Global atomic counter for unique per-order IDs.
+             *
+             * Seeded at 1 000 000 so simulation seed orders (1-30) don't
+             * collide with agent-generated orders.
+             */
+            static std::atomic<uint64_t> &order_id_counter()
+            {
+                static std::atomic<uint64_t> ctr{1'000'000};
+                return ctr;
+            }
         };
 
     } // namespace agents

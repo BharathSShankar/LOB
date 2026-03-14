@@ -113,13 +113,25 @@ namespace lob
 
             // Ensure price is positive
             if (price <= 0.0)
-            {
                 return nullptr;
-            }
 
-            // Note: Order creation will be handled by ObjectPool in orchestrator
-            // For now, return nullptr (same as NoiseTrader)
-            return nullptr;
+            // Allocate Order from the shared pool injected by the orchestrator
+            core::Order *order = alloc_order();
+            if (!order)
+                return nullptr; // Pool exhausted
+
+            uint64_t fixed_price = static_cast<uint64_t>(price * 100.0);
+            if (fixed_price == 0)
+                fixed_price = 1;
+
+            *order = core::Order(order_id_counter()++, /*timestamp=*/0,
+                                 fixed_price,
+                                 static_cast<uint64_t>(quantity),
+                                 side,
+                                 core::OrderType::LIMIT);
+
+            position_.update(side, quantity, price);
+            return order;
         }
 
         void MarketMaker::initialize(uint64_t agent_id, const AgentConfig &config)

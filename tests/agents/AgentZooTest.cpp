@@ -299,3 +299,86 @@ TEST_F(AgentZooTest, RespawnAfterKill)
     PopulationStats stats = zoo->get_stats();
     EXPECT_EQ(stats.total_active, 1u);
 }
+
+// ============================================================================
+// Population Tuning Tests
+// ============================================================================
+
+TEST_F(AgentZooTest, TunePopulationRatios_EqualDistribution)
+{
+    PopulationConfig config;
+
+    // Tune to equal distribution
+    tune_population_ratios(config, 0.333, 0.333, 0.334);
+
+    // Verify total count
+    EXPECT_GT(config.total_count(), 0u);
+
+    // Verify all three types are present
+    EXPECT_GT(config.populations[AgentType::TREND_FOLLOWER].count, 0u);
+    EXPECT_GT(config.populations[AgentType::MEAN_REVERTER].count, 0u);
+    EXPECT_GT(config.populations[AgentType::MARKET_MAKER].count, 0u);
+
+    // Apply to zoo
+    zoo->set_population(config);
+    PopulationStats stats = zoo->get_stats();
+    EXPECT_EQ(stats.total_active, config.total_count());
+}
+
+TEST_F(AgentZooTest, TunePopulationRatios_MomentumHeavy)
+{
+    PopulationConfig config;
+
+    // Tune to momentum-heavy (60/20/20)
+    tune_population_ratios(config, 0.60, 0.20, 0.20);
+
+    uint32_t total = config.total_count();
+    EXPECT_GT(total, 0u);
+
+    // Trend followers should be ~60%
+    uint32_t tf_count = config.populations[AgentType::TREND_FOLLOWER].count;
+    double tf_pct = static_cast<double>(tf_count) / total;
+    EXPECT_NEAR(tf_pct, 0.60, 0.05); // Within 5%
+
+    // Apply to zoo
+    zoo->set_population(config);
+    PopulationStats stats = zoo->get_stats();
+    EXPECT_EQ(stats.total_active, total);
+}
+
+TEST_F(AgentZooTest, TunePopulationRatios_ValueHeavy)
+{
+    PopulationConfig config;
+
+    // Tune to value-heavy (20/60/20)
+    tune_population_ratios(config, 0.20, 0.60, 0.20);
+
+    uint32_t total = config.total_count();
+    EXPECT_GT(total, 0u);
+
+    // Mean reverters should be ~60%
+    uint32_t mr_count = config.populations[AgentType::MEAN_REVERTER].count;
+    double mr_pct = static_cast<double>(mr_count) / total;
+    EXPECT_NEAR(mr_pct, 0.60, 0.05); // Within 5%
+
+    // Apply to zoo
+    zoo->set_population(config);
+    PopulationStats stats = zoo->get_stats();
+    EXPECT_EQ(stats.total_active, total);
+}
+
+TEST_F(AgentZooTest, TunePopulationRatios_NormalizesPercentages)
+{
+    PopulationConfig config;
+
+    // Provide percentages that don't sum to 1.0
+    tune_population_ratios(config, 0.50, 0.30, 0.30); // Sums to 1.10
+
+    // Should still create valid population
+    EXPECT_GT(config.total_count(), 0u);
+
+    // Apply to zoo should work
+    zoo->set_population(config);
+    PopulationStats stats = zoo->get_stats();
+    EXPECT_GT(stats.total_active, 0u);
+}

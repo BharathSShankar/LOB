@@ -132,6 +132,9 @@ namespace lob
                     continue;
                 }
 
+                // Inject the order pool so decide() can allocate Order objects
+                agent->set_order_pool(&order_pool_);
+
                 // Tick agent to update internal state
                 agent->tick(current_market_state_);
 

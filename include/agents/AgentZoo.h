@@ -3,6 +3,9 @@
 #include "Agent.h"
 #include "NoiseTrader.h"
 #include "MarketMaker.h"
+#include "TrendFollower.h"
+#include "MeanReverter.h"
+#include "Whale.h"
 #include "../memory/ObjectPool.h"
 #include <array>
 #include <atomic>
@@ -160,15 +163,17 @@ namespace lob
             // Pool capacities per agent type
             static constexpr size_t NOISE_TRADER_CAPACITY = 5000;
             static constexpr size_t MARKET_MAKER_CAPACITY = 3000;
+            static constexpr size_t TREND_FOLLOWER_CAPACITY = 2000;
+            static constexpr size_t MEAN_REVERTER_CAPACITY = 2000;
+            static constexpr size_t WHALE_CAPACITY = 10;
             static constexpr size_t MAX_TOTAL_AGENTS = 10000;
 
             // Pre-allocated pools for each agent type
             memory::ObjectPool<NoiseTrader, NOISE_TRADER_CAPACITY> noise_traders_;
             memory::ObjectPool<MarketMaker, MARKET_MAKER_CAPACITY> market_makers_;
-            // TODO: Add pools for other agent types as they are implemented
-            // memory::ObjectPool<TrendFollower, TREND_FOLLOWER_CAPACITY> trend_followers_;
-            // memory::ObjectPool<MeanReverter, MEAN_REVERTER_CAPACITY> mean_reverters_;
-            // memory::ObjectPool<Whale, WHALE_CAPACITY> whales_;
+            memory::ObjectPool<TrendFollower, TREND_FOLLOWER_CAPACITY> trend_followers_;
+            memory::ObjectPool<MeanReverter, MEAN_REVERTER_CAPACITY> mean_reverters_;
+            memory::ObjectPool<Whale, WHALE_CAPACITY> whales_;
 
             // Active agents tracking
             std::array<Agent *, MAX_TOTAL_AGENTS> active_agents_;
@@ -209,6 +214,21 @@ namespace lob
          * - Single whale configured to dump at specific time
          */
         PopulationConfig create_flash_crash_population();
+
+        /**
+         * @brief Tune population ratios in an existing configuration
+         * @param config Population configuration to modify
+         * @param momentum_pct Percentage of trend followers (0.0 - 1.0)
+         * @param value_pct Percentage of mean reverters (0.0 - 1.0)
+         * @param mm_pct Percentage of market makers (0.0 - 1.0)
+         *
+         * Adjusts population ratios to match desired percentages.
+         * The total population count is preserved.
+         */
+        void tune_population_ratios(PopulationConfig &config,
+                                    double momentum_pct,
+                                    double value_pct,
+                                    double mm_pct);
 
     } // namespace agents
 } // namespace lob

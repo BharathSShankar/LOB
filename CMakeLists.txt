@@ -66,8 +66,24 @@ set(AGENT_SOURCES
     src/agents/Agent.cpp
     src/agents/NoiseTrader.cpp
     src/agents/MarketMaker.cpp
+    src/agents/TrendFollower.cpp
+    src/agents/MeanReverter.cpp
+    src/agents/Whale.cpp
     src/agents/AgentZoo.cpp
     src/agents/AgentOrchestrator.cpp
+    src/agents/PopulationPresets.cpp
+)
+
+set(ANALYTICS_SOURCES
+    src/analytics/OHLCVAggregator.cpp
+    src/analytics/PatternScanner.cpp
+)
+
+# Week 10 UI sources (compiled only into the ImGui visualization build)
+set(UI_SOURCES
+    src/ui/AgentConfigPanel.cpp
+    src/ui/CandlestickChart.cpp
+    src/ui/StatsDashboard.cpp
 )
 
 # Library with all sources
@@ -78,6 +94,7 @@ add_library(lob_lib STATIC
     ${MARKET_DATA_SOURCES}
     ${PROFILING_SOURCES}
     ${AGENT_SOURCES}
+    ${ANALYTICS_SOURCES}
 )
 
 target_include_directories(lob_lib PUBLIC ${CMAKE_SOURCE_DIR}/include)
@@ -86,8 +103,9 @@ target_include_directories(lob_lib PUBLIC ${CMAKE_SOURCE_DIR}/include)
 add_executable(lob_matching_engine src/main.cpp)
 target_link_libraries(lob_matching_engine PRIVATE lob_lib)
 
-# Enable testing
+# Enable testing with CTest
 enable_testing()
+include(CTest)
 
 # Google Test
 include(FetchContent)
@@ -110,8 +128,13 @@ set(TEST_SOURCES
     tests/agents/AgentTest.cpp
     tests/agents/NoiseTraderTest.cpp
     tests/agents/MarketMakerTest.cpp
+    tests/agents/TrendFollowerTest.cpp
+    tests/agents/MeanReverterTest.cpp
+    tests/agents/WhaleTest.cpp
     tests/agents/AgentZooTest.cpp
     tests/agents/AgentOrchestratorTest.cpp
+    tests/analytics/OHLCVAggregatorTest.cpp
+    tests/analytics/PatternScannerTest.cpp
 )
 
 # Create test executable
@@ -181,6 +204,11 @@ if(BUILD_BENCHMARK)
     add_executable(lob_tick_to_trade_benchmark benchmarks/TickToTradeBenchmark.cpp)
     target_link_libraries(lob_tick_to_trade_benchmark PRIVATE lob_lib benchmark::benchmark)
     target_include_directories(lob_tick_to_trade_benchmark PRIVATE ${CMAKE_SOURCE_DIR}/include)
+
+    # Week 10: Scenario benchmark (population scenarios & OHLCV metrics)
+    add_executable(lob_scenario_benchmark benchmarks/ScenarioBenchmark.cpp)
+    target_link_libraries(lob_scenario_benchmark PRIVATE lob_lib)
+    target_include_directories(lob_scenario_benchmark PRIVATE ${CMAKE_SOURCE_DIR}/include)
 endif()
 
 # Visualization (optional, requires GLFW and OpenGL)
@@ -236,7 +264,7 @@ if(BUILD_VISUALIZATION)
             list(APPEND VIEWER_SOURCES src/market_data/LiveWebSocketClient.cpp)
         endif()
         
-        # Add visualization executable
+        # Add visualization executable (LOB depth chart)
         add_executable(lob_depth_viewer
             ${VIEWER_SOURCES}
             ${IMGUI_SOURCES}
@@ -265,6 +293,31 @@ if(BUILD_VISUALIZATION)
         else()
             message(STATUS "Live WebSocket streaming: DISABLED")
         endif()
+
+        # ── Week 10: ABMS Interactive Viewer ─────────────────────────────────
+        add_executable(lob_abms_viewer
+            src/main_abms.cpp
+            ${UI_SOURCES}
+            ${IMGUI_SOURCES}
+        )
+
+        target_include_directories(lob_abms_viewer PRIVATE
+            ${CMAKE_SOURCE_DIR}/include
+            ${imgui_SOURCE_DIR}
+            ${imgui_SOURCE_DIR}/backends
+        )
+
+        target_link_libraries(lob_abms_viewer PRIVATE
+            lob_lib
+            OpenGL::GL
+            glfw
+        )
+
+        target_compile_definitions(lob_abms_viewer PRIVATE
+            ENABLE_OPENGL_VIEWER
+            GL_SILENCE_DEPRECATION   # suppress macOS 10.14+ OpenGL deprecation warnings
+        )
+        message(STATUS "ABMS viewer (Week 10): ENABLED → lob_abms_viewer")
     else()
         message(STATUS "GLFW not found, building terminal-only visualization")
         
