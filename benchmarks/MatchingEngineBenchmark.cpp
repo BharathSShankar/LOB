@@ -13,7 +13,6 @@ using namespace lob;
 // Benchmark single order processing
 static void BM_ProcessSingleOrder(benchmark::State &state)
 {
-    // TODO (Week 6): Benchmark single order latency
     core::MatchingEngine engine;
     engine.initialize();
 
@@ -37,7 +36,6 @@ BENCHMARK(BM_ProcessSingleOrder);
 // Benchmark order matching
 static void BM_OrderMatching(benchmark::State &state)
 {
-    // TODO (Week 6): Benchmark order matching performance
     core::MatchingEngine engine;
     engine.initialize();
 
@@ -71,7 +69,6 @@ BENCHMARK(BM_OrderMatching);
 // Benchmark throughput with many orders
 static void BM_HighThroughput(benchmark::State &state)
 {
-    // TODO (Week 6): Benchmark throughput (orders/second)
     core::MatchingEngine engine;
     engine.initialize();
 
@@ -109,7 +106,6 @@ BENCHMARK(BM_HighThroughput)->Iterations(1000000);
 // Benchmark object pool allocation
 static void BM_ObjectPoolAllocation(benchmark::State &state)
 {
-    // TODO (Week 6): Benchmark object pool vs heap allocation
     memory::ObjectPool<core::Order, 100000> pool;
 
     for (auto _ : state)
@@ -126,7 +122,6 @@ BENCHMARK(BM_ObjectPoolAllocation);
 // Benchmark heap allocation (for comparison)
 static void BM_HeapAllocation(benchmark::State &state)
 {
-    // TODO (Week 6): Compare with standard heap allocation
     for (auto _ : state)
     {
         auto *order = new core::Order();

@@ -98,11 +98,9 @@ namespace lob::core
         PoolStats get_pool_statistics() const noexcept;
 
     private:
-        // TODO (Week 1-2): Validate order before processing
         bool validate_order(const Order *order) const noexcept;
 
-        // Order books for each instrument
-        // TODO (Week 3-4): Consider pre-allocating fixed number of order books
+        // Order books for each instrument (keyed by symbol)
         std::unordered_map<std::string, std::unique_ptr<OrderBook>> order_books_;
 
         // Engine statistics

@@ -10,14 +10,14 @@ namespace lob::concurrency
     /**
      * @brief Lock-free Single-Producer Single-Consumer (SPSC) Ring Buffer
      *
-     * Week 5 Focus: This implements the Disruptor pattern for ultra-low latency
-     * thread communication without mutexes.
+     * Implements the Disruptor pattern for ultra-low latency thread
+     * communication without mutexes.
      *
-     * Key Concepts:
-     * - Lock-free: Uses atomic operations instead of locks
+     * Key properties:
+     * - Lock-free using atomic operations (no mutexes)
      * - Wait-free for producer and consumer (in most cases)
      * - Cache-line padding to prevent false sharing
-     * - Memory ordering (acquire/release semantics)
+     * - Acquire/release memory ordering semantics
      *
      * @tparam T Type of elements in the buffer
      * @tparam Size Size of the ring buffer (must be power of 2 for optimization)
@@ -87,9 +87,6 @@ namespace lob::concurrency
         // The actual data storage
         std::array<T, Size> buffer_;
 
-        // TODO (Week 5): Add proper memory ordering
-        // std::memory_order_acquire, std::memory_order_release
-
         // Producer-side index (written by producer, read by consumer)
         alignas(CACHE_LINE_SIZE) std::atomic<size_t> write_index_;
 
@@ -109,18 +106,11 @@ namespace lob::concurrency
     RingBuffer<T, Size>::RingBuffer() noexcept
         : write_index_(0), read_index_(0), cached_read_index_(0), cached_write_index_(0)
     {
-        // TODO (Week 5): Initialize ring buffer
     }
 
     template <typename T, size_t Size>
     bool RingBuffer<T, Size>::push(const T &item) noexcept
     {
-        // TODO (Week 5): Implement lock-free push
-        // 1. Get current write position
-        // 2. Check if buffer is full (write would catch up to read)
-        // 3. Write item at write position
-        // 4. Increment write index with proper memory ordering
-
         const size_t write_pos = write_index_.load(std::memory_order_relaxed);
         const size_t next_write = (write_pos + 1) & (Size - 1);
 
@@ -147,7 +137,6 @@ namespace lob::concurrency
     template <typename T, size_t Size>
     bool RingBuffer<T, Size>::push(T &&item) noexcept
     {
-        // TODO (Week 5): Implement move version
         const size_t write_pos = write_index_.load(std::memory_order_relaxed);
         const size_t next_write = (write_pos + 1) & (Size - 1);
 
@@ -169,12 +158,6 @@ namespace lob::concurrency
     template <typename T, size_t Size>
     bool RingBuffer<T, Size>::pop(T &item) noexcept
     {
-        // TODO (Week 5): Implement lock-free pop
-        // 1. Get current read position
-        // 2. Check if buffer is empty (read caught up to write)
-        // 3. Read item from read position
-        // 4. Increment read index with proper memory ordering
-
         const size_t read_pos = read_index_.load(std::memory_order_relaxed);
 
         // Check if empty

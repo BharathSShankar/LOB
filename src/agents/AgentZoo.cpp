@@ -15,8 +15,6 @@ namespace lob
 
         void PopulationConfig::normalize()
         {
-            // TODO: Implement normalization to fit within pool limits
-            // For now, just validate that counts don't exceed pool capacities
             uint32_t total = total_count();
             if (total > 10000)
             {
@@ -110,7 +108,7 @@ namespace lob
             }
 
             case AgentType::ARBITRAGEUR:
-                // TODO: Implement when Arbitrageur agent is added
+                // Arbitrageur agent not yet implemented
                 return nullptr;
 
             default:

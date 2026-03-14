@@ -3,19 +3,20 @@
 #include <cstdint>
 #include <vector>
 #include <array>
+#include <atomic>
 #include <cassert>
 
 namespace lob::memory
 {
 
     /**
-     * @brief Lock-free Object Pool for pre-allocated objects
+     * @brief Spinlock-protected Object Pool for pre-allocated objects
      *
-     * Zero heap allocation during runtime - all objects allocated at construction.
-     * Uses a free list for O(1) allocation/deallocation.
-     *
-     * Week 3-4 Focus: This is critical for achieving sub-microsecond latency.
-     * No new/delete/malloc on the hot path!
+     * All objects are heap-allocated at construction time. During runtime,
+     * acquire() and release() operate in O(1) with no heap allocation.
+     * Thread safety is provided via a lightweight spinlock (std::atomic_flag),
+     * making the pool safe for concurrent access from producer and consumer
+     * threads. The ring buffer between threads remains fully lock-free.
      *
      * @tparam T Type of object to pool
      * @tparam Capacity Maximum number of objects in pool
@@ -39,13 +40,13 @@ namespace lob::memory
         ObjectPool &operator=(const ObjectPool &) = delete;
 
         /**
-         * @brief Rent an object from the pool
+         * @brief Acquire an object from the pool (spinlock-protected)
          * @return Pointer to object, nullptr if pool exhausted
          */
         T *acquire() noexcept;
 
         /**
-         * @brief Return an object to the pool
+         * @brief Return an object to the pool (spinlock-protected)
          * @param obj Pointer to object to return
          */
         void release(T *obj) noexcept;
@@ -71,26 +72,36 @@ namespace lob::memory
         bool is_full() const noexcept;
 
         /**
-         * @brief Reset pool to initial state
+         * @brief Reset pool to initial state (NOT thread-safe — call only when idle)
          */
         void reset() noexcept;
 
     private:
-        // TODO (Week 3-4): Implement efficient memory layout
-        // Consider alignment and cache line optimization
-
-        // Storage for all objects (allocated at construction)
+        // Storage for all objects (allocated at construction, cache-line aligned)
         alignas(64) std::array<T, Capacity> storage_;
 
-        // Free list - indices of available objects
+        // Free list — indices of available objects
         std::array<size_t, Capacity> free_list_;
 
-        // Index of next free slot
+        // Number of free slots (also acts as stack top index)
         size_t free_index_;
 
-        // TODO (Week 5): Make this lock-free using atomics
-        // For multi-threaded access, need atomic operations
-        // std::atomic<size_t> free_index_;
+        // Spinlock protecting free_list_ and free_index_
+        mutable std::atomic_flag lock_ = ATOMIC_FLAG_INIT;
+
+        void spin_lock() const noexcept
+        {
+            while (lock_.test_and_set(std::memory_order_acquire))
+            {
+                // Busy-wait (spin). On x86 this compiles to a tight loop;
+                // on ARM the acquire fence provides the necessary barrier.
+            }
+        }
+
+        void spin_unlock() const noexcept
+        {
+            lock_.clear(std::memory_order_release);
+        }
     };
 
     // ============================================================================
@@ -101,8 +112,6 @@ namespace lob::memory
     ObjectPool<T, Capacity>::ObjectPool() noexcept
         : free_index_(Capacity)
     {
-        // TODO (Week 3-4): Initialize free list
-        // All indices point to objects in storage_
         for (size_t i = 0; i < Capacity; ++i)
         {
             free_list_[i] = i;
@@ -118,28 +127,24 @@ namespace lob::memory
     template <typename T, size_t Capacity>
     T *ObjectPool<T, Capacity>::acquire() noexcept
     {
-        // TODO (Week 3-4): Implement O(1) allocation
-        // 1. Check if pool has available objects
-        // 2. Get next free index from free list
-        // 3. Return pointer to object
+        spin_lock();
 
         if (free_index_ == 0)
         {
+            spin_unlock();
             return nullptr; // Pool exhausted
         }
 
         --free_index_;
         size_t obj_index = free_list_[free_index_];
+
+        spin_unlock();
         return &storage_[obj_index];
     }
 
     template <typename T, size_t Capacity>
     void ObjectPool<T, Capacity>::release(T *obj) noexcept
     {
-        // TODO (Week 3-4): Implement O(1) deallocation
-        // 1. Validate pointer is from this pool
-        // 2. Add index back to free list
-
         if (!obj)
             return;
 
@@ -147,13 +152,18 @@ namespace lob::memory
         size_t obj_index = obj - &storage_[0];
         assert(obj_index < Capacity && "Object not from this pool");
 
+        spin_lock();
+
         if (free_index_ >= Capacity)
         {
+            spin_unlock();
             return; // Pool already full
         }
 
         free_list_[free_index_] = obj_index;
         ++free_index_;
+
+        spin_unlock();
     }
 
     template <typename T, size_t Capacity>
@@ -177,7 +187,6 @@ namespace lob::memory
     template <typename T, size_t Capacity>
     void ObjectPool<T, Capacity>::reset() noexcept
     {
-        // TODO (Week 3-4): Reset pool to initial state
         free_index_ = Capacity;
         for (size_t i = 0; i < Capacity; ++i)
         {

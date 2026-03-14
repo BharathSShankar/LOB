@@ -15,16 +15,12 @@ namespace lob::core
 
     void PriceLevel::add_order(Order *order) noexcept
     {
-        // TODO (Week 1): Add order to FIFO queue
-        // Update total_quantity_
         orders_.push_back(order);
         total_quantity_ += order->remaining_quantity;
     }
 
     bool PriceLevel::remove_order(uint64_t order_id) noexcept
     {
-        // TODO (Week 1): Find and remove order from queue
-        // Update total_quantity_
         for (auto it = orders_.begin(); it != orders_.end(); ++it)
         {
             if ((*it)->order_id == order_id)
@@ -58,21 +54,14 @@ namespace lob::core
 
     std::vector<Trade> OrderBook::add_order(Order *order) noexcept
     {
-        // TODO (Week 1-2): Implement order adding logic
-        // 1. Check order type (LIMIT vs MARKET)
-        // 2. Try to match against opposite side
-        // 3. If not fully filled, add remaining to book
-
         std::vector<Trade> trades;
 
         if (order->type == OrderType::MARKET)
         {
-            // TODO: Match market order
             trades = match_market_order(order);
         }
         else if (order->type == OrderType::LIMIT)
         {
-            // TODO: Match limit order
             trades = match_limit_order(order);
         }
 
@@ -137,7 +126,6 @@ namespace lob::core
 
     std::optional<uint64_t> OrderBook::get_best_bid() const noexcept
     {
-        // TODO (Week 1): Return highest bid price
         if (bids_.empty())
         {
             return std::nullopt;
@@ -147,7 +135,6 @@ namespace lob::core
 
     std::optional<uint64_t> OrderBook::get_best_ask() const noexcept
     {
-        // TODO (Week 1): Return lowest ask price
         if (asks_.empty())
         {
             return std::nullopt;
@@ -157,7 +144,6 @@ namespace lob::core
 
     std::optional<uint64_t> OrderBook::get_spread() const noexcept
     {
-        // TODO (Week 1): Calculate spread
         auto best_bid = get_best_bid();
         auto best_ask = get_best_ask();
 

@@ -60,9 +60,9 @@ namespace lob::core
      * @brief Order Book for a single instrument
      * Implements Price-Time Priority matching algorithm
      *
-     * TODO (Weeks 1-2):
-     * - Currently uses std::map (Red-Black tree) which is O(log n)
-     * - Optimize to flat_map or fixed-size array for known tick sizes
+     * Note: Price levels currently use std::map (Red-Black tree, O(log n) lookup).
+     * A future optimisation would replace this with a flat_map or fixed-size
+     * array indexed by tick offset for O(1) access.
      */
     class OrderBook
     {
@@ -140,13 +140,8 @@ namespace lob::core
         std::string to_string(size_t levels = 10) const noexcept;
 
     private:
-        // TODO (Week 1-2): Match a limit order against the book
         std::vector<Trade> match_limit_order(Order *order) noexcept;
-
-        // TODO (Week 1-2): Match a market order against the book
         std::vector<Trade> match_market_order(Order *order) noexcept;
-
-        // TODO (Week 1-2): Helper to execute a trade between two orders
         Trade execute_trade(Order *incoming, Order *resting, uint64_t quantity) noexcept;
 
         // Price levels ordered by price

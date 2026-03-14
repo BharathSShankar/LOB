@@ -23,7 +23,6 @@ protected:
 
 TEST_F(OrderTest, DefaultConstructor)
 {
-    // TODO (Week 1): Test default constructor
     Order order;
     EXPECT_EQ(order.order_id, 0);
     EXPECT_EQ(order.quantity, 0);
@@ -32,7 +31,6 @@ TEST_F(OrderTest, DefaultConstructor)
 
 TEST_F(OrderTest, ParameterizedConstructor)
 {
-    // TODO (Week 1): Test parameterized constructor
     Order order(1, 1000, 10000, 100, Side::BUY, OrderType::LIMIT);
 
     EXPECT_EQ(order.order_id, 1);
@@ -47,14 +45,12 @@ TEST_F(OrderTest, ParameterizedConstructor)
 
 TEST_F(OrderTest, IsFilledWhenNew)
 {
-    // TODO (Week 1): Test is_filled() on new order
     Order order(1, 1000, 10000, 100, Side::BUY, OrderType::LIMIT);
     EXPECT_FALSE(order.is_filled());
 }
 
 TEST_F(OrderTest, IsFilledWhenFullyFilled)
 {
-    // TODO (Week 1): Test is_filled() when fully filled
     Order order(1, 1000, 10000, 100, Side::BUY, OrderType::LIMIT);
     order.remaining_quantity = 0;
     EXPECT_TRUE(order.is_filled());
@@ -62,7 +58,6 @@ TEST_F(OrderTest, IsFilledWhenFullyFilled)
 
 TEST_F(OrderTest, IsActive)
 {
-    // TODO (Week 1): Test is_active()
     Order order(1, 1000, 10000, 100, Side::BUY, OrderType::LIMIT);
     EXPECT_TRUE(order.is_active());
 
@@ -72,7 +67,6 @@ TEST_F(OrderTest, IsActive)
 
 TEST_F(OrderTest, PartialFill)
 {
-    // TODO (Week 1): Test fill() method
     Order order(1, 1000, 10000, 100, Side::BUY, OrderType::LIMIT);
     order.fill(30);
 
@@ -83,7 +77,6 @@ TEST_F(OrderTest, PartialFill)
 
 TEST_F(OrderTest, CompleteFill)
 {
-    // TODO (Week 1): Test complete fill
     Order order(1, 1000, 10000, 100, Side::BUY, OrderType::LIMIT);
     order.fill(100);
 
@@ -94,7 +87,6 @@ TEST_F(OrderTest, CompleteFill)
 
 TEST_F(OrderTest, CancelOrder)
 {
-    // TODO (Week 1): Test cancel()
     Order order(1, 1000, 10000, 100, Side::BUY, OrderType::LIMIT);
     order.cancel();
 
@@ -104,7 +96,6 @@ TEST_F(OrderTest, CancelOrder)
 
 TEST_F(OrderTest, SizeOptimization)
 {
-    // TODO (Week 3-4): Verify order fits in cache line
-    // Target: 64 bytes for cache efficiency
+    // Verify order fits in cache line (target: 64 bytes for cache efficiency)
     EXPECT_LE(sizeof(Order), 64) << "Order should fit in single cache line";
 }

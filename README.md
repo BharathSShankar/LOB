@@ -1,13 +1,13 @@
 # High-Performance Limit Order Book (LOB) Matching Engine
 
-A deterministic matching engine simulation targeting >1 million orders/second with sub-microsecond latency, built using lock-free data structures and zero-allocation design.
+A deterministic matching engine simulation targeting >1 million orders/second with sub-microsecond latency, built using lock-free data structures and low-allocation design.
 
 ## 🎯 Project Goals
 
 - **Performance:** Process >1,000,000 orders/second
 - **Latency:** Sub-microsecond tick-to-trade latency
-- **Architecture:** Zero dynamic allocation on hot path
-- **Concurrency:** Lock-free communication between components
+- **Architecture:** Low-allocation design — pre-allocated object pool, lock-free ring buffer
+- **Concurrency:** Lock-free SPSC ring buffer; spinlock-protected object pool
 
 ## 📋 Table of Contents
 
@@ -77,9 +77,9 @@ This project simulates an exchange core similar to NASDAQ or CME with four main 
 
 - **Object Pool** ([`ObjectPool.h`](include/memory/ObjectPool.h))
   - Pre-allocated pool of Order objects
-  - Zero heap allocation during runtime
-  - O(1) acquire/release operations
-  - Cache-friendly contiguous memory
+  - O(1) acquire/release with no heap allocation at runtime
+  - Thread-safe via lightweight spinlock (`std::atomic_flag`)
+  - Cache-friendly contiguous memory (64-byte aligned storage)
 
 ## 📁 Project Structure
 
@@ -497,7 +497,7 @@ For complete profiling documentation:
 See [`ROADMAP.md`](ROADMAP.md) for the detailed 6-week implementation plan:
 
 - **Week 1-2:** Core matching engine (Order, OrderBook, MatchingEngine)
-- **Week 3-4:** Memory management (ObjectPool, zero-allocation design)
+- **Week 3-4:** Memory management (ObjectPool, low-allocation design)
 - **Week 5:** Concurrency (RingBuffer, OrderEntryGateway, lock-free patterns)
 - **Week 6:** Benchmarking, visualization, and optimization
 
@@ -522,24 +522,27 @@ Each week includes:
 
 ### Key Techniques Used
 
-1. **Zero Dynamic Allocation** ✅
-   - All orders pre-allocated in object pool (6.2x faster than heap)
-   - Fixed-size containers where possible
-   - No `new`/`delete` on hot path
+1. **Low-Allocation Design** ✅
+   - All Order objects pre-allocated in Object Pool (6.2x faster than heap)
+   - Ring buffer uses fixed-size `std::array` — no runtime allocation
+   - **Known limitation:** OrderBook price levels use `std::map` (Red-Black tree)
+     and `std::deque`, which perform heap allocations when new price levels are
+     created or order queues grow. See [Known Limitations](#known-limitations--future-work).
 
 2. **Cache-Aware Design** ✅
    - Order struct fits in single cache line (48 bytes in 64-byte line)
    - Cache-line padding in RingBuffer to prevent false sharing
    - Contiguous memory layout in ObjectPool
 
-3. **Lock-Free Algorithms** ✅
-   - SPSC ring buffer using atomics
-   - Acquire/release memory ordering
-   - No mutexes in hot path
+3. **Lock-Free & Low-Lock Algorithms** ✅
+   - SPSC ring buffer is fully lock-free using atomics
+   - Acquire/release memory ordering for thread visibility
+   - Object Pool uses a lightweight spinlock (`std::atomic_flag`) to allow
+     safe concurrent acquire (producer) and release (consumer)
 
 4. **Data Structure Optimization** ✅
-   - Price levels use FIFO queue (std::deque)
-   - Fast order lookup with hash map
+   - Price levels use FIFO queue (`std::deque`)
+   - Fast order lookup with `std::map`
    - Price-time priority algorithm
 
 ### Next-Level Optimizations
@@ -620,11 +623,26 @@ Benefits:
 - [Folly ProducerConsumerQueue](https://github.com/facebook/folly)
 - [Matching Engine Examples](https://github.com/topics/matching-engine)
 
+## ⚠️ Known Limitations / Future Work
+
+| Area | Current State | Impact | Planned Improvement |
+|------|--------------|--------|---------------------|
+| **OrderBook price levels** | `std::map` (Red-Black tree) | Heap allocation on every new price level (`operator new`) | Replace with a flat array indexed by tick offset, or a pre-allocated `flat_map` |
+| **Order queues** | `std::deque` per price level | Heap allocation when deque blocks grow | Replace with intrusive linked list threaded through the `Order` objects themselves |
+| **Object Pool** | Spinlock-protected (`std::atomic_flag`) | Minimal contention in SPSC usage, but not lock-free | Upgrade to a lock-free Treiber stack or split into per-thread pools |
+| **Agent dispatch** | `virtual` function (`Agent::decide()`) | vtable lookup on every agent tick | Replace with CRTP / `std::variant` dispatch for compile-time polymorphism |
+| **Agent math** | `double` for prices in `MarketMaker` | Floating-point is fine for probabilistic logic, but could drift vs fixed-point engine | Accept this trade-off or convert to fixed-point throughout |
+
+> **In short:** The Object Pool and Ring Buffer are allocation-free at runtime.
+> The OrderBook's `std::map` and `std::deque` still perform heap allocations,
+> so the system is best described as **"low-allocation"**, not "zero-allocation".
+
 ## 🤝 Contributing
 
 Contributions are welcome! Areas for improvement:
 
-- [ ] Implement flat_map optimization for order book
+- [ ] Replace `std::map` price levels with flat array / `flat_map` for zero-alloc order book
+- [ ] Upgrade Object Pool to lock-free Treiber stack
 - [ ] Add multi-producer multi-consumer ring buffer
 - [ ] Implement order book visualization with ImGui
 - [ ] Add FIX protocol parser for order entry

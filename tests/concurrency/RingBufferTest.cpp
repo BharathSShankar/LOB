@@ -28,7 +28,6 @@ protected:
 
 TEST_F(RingBufferTest, InitialState)
 {
-    // TODO (Week 5): Test initial buffer state
     EXPECT_TRUE(buffer.empty());
     EXPECT_FALSE(buffer.full());
     EXPECT_EQ(buffer.size(), 0);
@@ -37,7 +36,6 @@ TEST_F(RingBufferTest, InitialState)
 
 TEST_F(RingBufferTest, PushSingleElement)
 {
-    // TODO (Week 5): Test pushing single element
     bool success = buffer.push(42);
 
     EXPECT_TRUE(success);
@@ -47,7 +45,6 @@ TEST_F(RingBufferTest, PushSingleElement)
 
 TEST_F(RingBufferTest, PopSingleElement)
 {
-    // TODO (Week 5): Test popping single element
     buffer.push(42);
 
     int value;
@@ -60,7 +57,6 @@ TEST_F(RingBufferTest, PopSingleElement)
 
 TEST_F(RingBufferTest, PopFromEmpty)
 {
-    // TODO (Week 5): Test popping from empty buffer
     int value;
     bool success = buffer.pop(value);
 
@@ -69,7 +65,6 @@ TEST_F(RingBufferTest, PopFromEmpty)
 
 TEST_F(RingBufferTest, PushToFull)
 {
-    // TODO (Week 5): Test pushing to full buffer
     // Fill buffer completely (capacity - 1 due to implementation)
     for (size_t i = 0; i < BUFFER_SIZE - 1; ++i)
     {
@@ -86,7 +81,6 @@ TEST_F(RingBufferTest, PushToFull)
 
 TEST_F(RingBufferTest, PushPopSequence)
 {
-    // TODO (Week 5): Test push-pop sequence
     std::vector<int> values = {1, 2, 3, 4, 5};
 
     // Push all values
@@ -108,7 +102,6 @@ TEST_F(RingBufferTest, PushPopSequence)
 
 TEST_F(RingBufferTest, MoveSemantics)
 {
-    // TODO (Week 5): Test move semantics for push
     std::string str = "test";
     bool success = buffer.push(std::move(42));
     EXPECT_TRUE(success);
@@ -116,7 +109,6 @@ TEST_F(RingBufferTest, MoveSemantics)
 
 TEST_F(RingBufferTest, WrapAround)
 {
-    // TODO (Week 5): Test wrap-around behavior
     // Fill half buffer
     for (size_t i = 0; i < BUFFER_SIZE / 2; ++i)
     {
@@ -140,7 +132,6 @@ TEST_F(RingBufferTest, WrapAround)
 
 TEST_F(RingBufferTest, SizeTracking)
 {
-    // TODO (Week 5): Test size tracking
     EXPECT_EQ(buffer.size(), 0);
 
     buffer.push(1);
@@ -160,7 +151,6 @@ TEST_F(RingBufferTest, SizeTracking)
 
 TEST_F(RingBufferTest, SingleProducerSingleConsumer)
 {
-    // TODO (Week 5): Test SPSC pattern
     static constexpr size_t NUM_ITEMS = 10000;
     std::atomic<bool> producer_done{false};
 
@@ -199,8 +189,7 @@ TEST_F(RingBufferTest, SingleProducerSingleConsumer)
 
 TEST_F(RingBufferTest, MemoryOrdering)
 {
-    // TODO (Week 5): Test memory ordering semantics
-    // This is difficult to test directly, but we can stress test
+    // Stress test memory ordering under contention
     static constexpr size_t ITERATIONS = 100000;
 
     std::thread producer([this]()
@@ -229,7 +218,6 @@ TEST_F(RingBufferTest, MemoryOrdering)
 
 TEST_F(RingBufferTest, CacheLinePadding)
 {
-    // TODO (Week 5): Verify cache line padding to prevent false sharing
     // Check that read and write indices are on different cache lines
     SUCCEED() << "Verify with performance profiling that false sharing is avoided";
 }
@@ -240,7 +228,6 @@ TEST_F(RingBufferTest, CacheLinePadding)
 
 TEST_F(RingBufferTest, Latency)
 {
-    // TODO (Week 6): Measure push/pop latency
     static constexpr size_t ITERATIONS = 100000;
 
     auto start = std::chrono::high_resolution_clock::now();

@@ -5,11 +5,7 @@ namespace lob::core
 
     void MatchingEngine::initialize() noexcept
     {
-        // TODO (Week 1): Initialize matching engine
-        // - Pre-create order books for known instruments
-        // - Initialize statistics
-
-        // Week 3-4: Initialize object pool (heap-allocated to avoid stack overflow)
+        // Initialize object pool (heap-allocated to avoid stack overflow)
         if (!order_pool_)
         {
             order_pool_ = std::make_unique<memory::ObjectPool<Order, 1000000>>();
@@ -21,7 +17,6 @@ namespace lob::core
 
     std::vector<Trade> MatchingEngine::process_order(Order *order) noexcept
     {
-        // TODO (Week 1-2): Process incoming order
         std::vector<Trade> trades;
 
         if (!order)
@@ -50,7 +45,6 @@ namespace lob::core
         // 3. Process order based on type
         if (order->type == OrderType::CANCEL)
         {
-            // TODO: Handle cancel orders
             stats_.total_orders_cancelled++;
         }
         else
@@ -73,7 +67,6 @@ namespace lob::core
     bool MatchingEngine::cancel_order(uint64_t order_id,
                                       const std::string &instrument) noexcept
     {
-        // TODO (Week 1): Implement order cancellation
         auto *book = get_order_book(instrument);
         if (!book)
         {
@@ -101,7 +94,6 @@ namespace lob::core
 
     void MatchingEngine::create_order_book(const std::string &instrument) noexcept
     {
-        // TODO (Week 1): Create new order book
         if (order_books_.find(instrument) == order_books_.end())
         {
             order_books_[instrument] = std::make_unique<OrderBook>();
@@ -137,11 +129,6 @@ namespace lob::core
 
     bool MatchingEngine::validate_order(const Order *order) const noexcept
     {
-        // TODO (Week 1): Implement order validation
-        // - Check if order_id is valid
-        // - Check if price/quantity are valid
-        // - Check for other business rules
-
         if (!order)
         {
             return false;

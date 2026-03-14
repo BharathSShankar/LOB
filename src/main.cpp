@@ -161,25 +161,25 @@ int main()
     std::cout << std::endl;
 
     // =========================================================================
-    // Week 1-2: Initialize Matching Engine
+    // Initialize Matching Engine
     // =========================================================================
-    std::cout << "[Week 1-2] Initializing Matching Engine...\n";
+    std::cout << "[Core] Initializing Matching Engine...\n";
     core::MatchingEngine engine;
     engine.initialize();
     std::cout << "  ✓ Matching Engine initialized\n";
 
     // =========================================================================
-    // Week 3-4: Object Pool Integration
+    // Object Pool Integration
     // =========================================================================
-    std::cout << "\n[Week 3-4] Object Pool Integration...\n";
+    std::cout << "\n[Memory] Object Pool Integration...\n";
     auto &order_pool = engine.get_order_pool();
     auto pool_stats = engine.get_pool_statistics();
     std::cout << "  ✓ Object Pool integrated with capacity: " << pool_stats.capacity << "\n";
 
     // =========================================================================
-    // Week 5: Lock-Free Concurrency
+    // Lock-Free Concurrency
     // =========================================================================
-    std::cout << "\n[Week 5] Initializing Lock-Free Ring Buffer & Gateway...\n";
+    std::cout << "\n[Concurrency] Initializing Lock-Free Ring Buffer & Gateway...\n";
 
     // Create a separate pool for the gateway (100K orders) - heap allocated to avoid stack overflow
     auto gateway_pool = std::make_unique<memory::ObjectPool<core::Order, 100000>>();
@@ -202,9 +202,9 @@ int main()
     std::cout << "  ✓ Ring Buffer capacity: 65536 orders\n";
 
     // =========================================================================
-    // Week 6: Market Data Publisher & Visualization
+    // Market Data Publisher & Visualization
     // =========================================================================
-    std::cout << "\n[Week 6] Initializing Market Data Publisher...\n";
+    std::cout << "\n[MarketData] Initializing Market Data Publisher...\n";
     market_data::MarketDataPublisher publisher;
 
     // Subscribe to trades for logging
@@ -444,7 +444,7 @@ int main()
     std::cout << "║                      IMPLEMENTATION COMPLETE                       ║\n";
     std::cout << "╠══════════════════════════════════════════════════════════════════════╣\n";
     std::cout << "║  ✓ Week 1-2: Matching Engine with Price-Time Priority              ║\n";
-    std::cout << "║  ✓ Week 3-4: Object Pool for Zero-Allocation Hot Path              ║\n";
+    std::cout << "║  ✓ Week 3-4: Object Pool for Low-Allocation Hot Path               ║\n";
     std::cout << "║  ✓ Week 5:   Lock-Free Ring Buffer & Multi-Threading               ║\n";
     std::cout << "║  ✓ Week 6:   Market Data Publisher & Visualization                 ║\n";
     std::cout << "╚════════════════════════════════════════════════════════════════════╝\n";

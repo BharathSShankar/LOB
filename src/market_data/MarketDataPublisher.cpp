@@ -6,7 +6,6 @@ namespace lob::market_data
 
     void MarketDataPublisher::subscribe_level1(Level1Callback callback) noexcept
     {
-        // TODO (Week 6): Add subscriber
         if (callback)
         {
             level1_subscribers_.push_back(callback);
@@ -15,7 +14,6 @@ namespace lob::market_data
 
     void MarketDataPublisher::subscribe_level2(Level2Callback callback) noexcept
     {
-        // TODO (Week 6): Add subscriber
         if (callback)
         {
             level2_subscribers_.push_back(callback);
@@ -24,7 +22,6 @@ namespace lob::market_data
 
     void MarketDataPublisher::subscribe_trades(TradeCallback callback) noexcept
     {
-        // TODO (Week 6): Add subscriber
         if (callback)
         {
             trade_subscribers_.push_back(callback);
@@ -33,7 +30,6 @@ namespace lob::market_data
 
     void MarketDataPublisher::publish_level1(const Level1Data &data) noexcept
     {
-        // TODO (Week 6): Notify all Level 1 subscribers
         for (const auto &callback : level1_subscribers_)
         {
             callback(data);
@@ -43,7 +39,6 @@ namespace lob::market_data
 
     void MarketDataPublisher::publish_level2(const Level2Data &data) noexcept
     {
-        // TODO (Week 6): Notify all Level 2 subscribers
         for (const auto &callback : level2_subscribers_)
         {
             callback(data);
@@ -53,7 +48,6 @@ namespace lob::market_data
 
     void MarketDataPublisher::publish_trade(const TradeData &data) noexcept
     {
-        // TODO (Week 6): Notify all trade subscribers
         for (const auto &callback : trade_subscribers_)
         {
             callback(data);
@@ -63,7 +57,6 @@ namespace lob::market_data
 
     void MarketDataPublisher::publish_trade(const core::Trade &trade) noexcept
     {
-        // TODO (Week 6): Convert core::Trade to TradeData and publish
         TradeData data;
         data.timestamp = trade.timestamp;
         data.trade_id = ++trade_id_counter_;
@@ -77,8 +70,6 @@ namespace lob::market_data
     void MarketDataPublisher::publish_snapshot(const core::OrderBook &book,
                                                size_t depth) noexcept
     {
-        // TODO (Week 6): Generate snapshot from order book
-
         // Publish Level 1 (BBO)
         auto best_bid = book.get_best_bid();
         auto best_ask = book.get_best_ask();

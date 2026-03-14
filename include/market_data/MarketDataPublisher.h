@@ -115,9 +115,6 @@ namespace lob::market_data
         Statistics get_statistics() const noexcept;
 
     private:
-        // TODO (Week 6): Implement publisher logic
-        // Consider using observer pattern or pub-sub
-
         std::vector<Level1Callback> level1_subscribers_;
         std::vector<Level2Callback> level2_subscribers_;
         std::vector<TradeCallback> trade_subscribers_;

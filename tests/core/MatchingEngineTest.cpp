@@ -33,7 +33,6 @@ protected:
 
 TEST_F(MatchingEngineTest, Initialization)
 {
-    // TODO (Week 1): Test engine initialization
     auto stats = engine.get_statistics();
     EXPECT_EQ(stats.total_orders_processed, 0);
     EXPECT_EQ(stats.total_trades_executed, 0);
@@ -41,7 +40,6 @@ TEST_F(MatchingEngineTest, Initialization)
 
 TEST_F(MatchingEngineTest, ProcessValidOrder)
 {
-    // TODO (Week 1-2): Test processing valid order
     Order order(1, 1000, 10000, 100, Side::BUY, OrderType::LIMIT);
     auto trades = engine.process_order(&order);
 
@@ -51,7 +49,6 @@ TEST_F(MatchingEngineTest, ProcessValidOrder)
 
 TEST_F(MatchingEngineTest, RejectInvalidOrder)
 {
-    // TODO (Week 1-2): Test order validation
     Order invalid_order(0, 1000, 10000, 100, Side::BUY, OrderType::LIMIT);
     auto trades = engine.process_order(&invalid_order);
 
@@ -63,7 +60,6 @@ TEST_F(MatchingEngineTest, RejectInvalidOrder)
 
 TEST_F(MatchingEngineTest, OrderMatching)
 {
-    // TODO (Week 2): Test order matching through engine
     Order buy(1, 1000, 10000, 100, Side::BUY, OrderType::LIMIT);
     Order sell(2, 1001, 10000, 100, Side::SELL, OrderType::LIMIT);
 
@@ -80,7 +76,6 @@ TEST_F(MatchingEngineTest, OrderMatching)
 
 TEST_F(MatchingEngineTest, CancelOrder)
 {
-    // TODO (Week 1-2): Test order cancellation through engine
     Order order(1, 1000, 10000, 100, Side::BUY, OrderType::LIMIT);
     engine.process_order(&order);
 
@@ -93,7 +88,6 @@ TEST_F(MatchingEngineTest, CancelOrder)
 
 TEST_F(MatchingEngineTest, MultipleInstruments)
 {
-    // TODO (Week 1-2): Test handling multiple instruments
     engine.create_order_book("BTCUSD");
     engine.create_order_book("ETHUSD");
 
@@ -107,7 +101,6 @@ TEST_F(MatchingEngineTest, MultipleInstruments)
 
 TEST_F(MatchingEngineTest, StatisticsTracking)
 {
-    // TODO (Week 1-2): Test statistics tracking
     Order buy1(1, 1000, 10000, 100, Side::BUY, OrderType::LIMIT);
     Order buy2(2, 1001, 9900, 50, Side::BUY, OrderType::LIMIT);
     Order sell(3, 1002, 10000, 100, Side::SELL, OrderType::LIMIT);
@@ -123,7 +116,6 @@ TEST_F(MatchingEngineTest, StatisticsTracking)
 
 TEST_F(MatchingEngineTest, ResetStatistics)
 {
-    // TODO (Week 1-2): Test statistics reset
     Order order(1, 1000, 10000, 100, Side::BUY, OrderType::LIMIT);
     engine.process_order(&order);
 

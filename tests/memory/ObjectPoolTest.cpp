@@ -4,7 +4,6 @@
 #include <thread>
 #include <vector>
 #include <atomic>
-#include <mutex>
 #include <chrono>
 #include <iostream>
 
@@ -19,22 +18,19 @@ protected:
 
     void SetUp() override
     {
-        // Setup code before each test
     }
 
     void TearDown() override
     {
-        // Cleanup code after each test
     }
 };
 
 // ============================================================================
-// Week 3-4 Tests - Object Pool Functionality
+// Object Pool Functionality Tests
 // ============================================================================
 
 TEST_F(ObjectPoolTest, InitialState)
 {
-    // TODO (Week 3): Test initial pool state
     EXPECT_EQ(pool.capacity(), POOL_SIZE);
     EXPECT_EQ(pool.available(), POOL_SIZE);
     EXPECT_TRUE(pool.is_full());
@@ -43,7 +39,6 @@ TEST_F(ObjectPoolTest, InitialState)
 
 TEST_F(ObjectPoolTest, AcquireObject)
 {
-    // TODO (Week 3): Test acquiring object
     auto *obj = pool.acquire();
     EXPECT_NE(obj, nullptr);
     EXPECT_EQ(pool.available(), POOL_SIZE - 1);
@@ -51,7 +46,6 @@ TEST_F(ObjectPoolTest, AcquireObject)
 
 TEST_F(ObjectPoolTest, ReleaseObject)
 {
-    // TODO (Week 3): Test releasing object
     auto *obj = pool.acquire();
     EXPECT_NE(obj, nullptr);
 
@@ -61,7 +55,6 @@ TEST_F(ObjectPoolTest, ReleaseObject)
 
 TEST_F(ObjectPoolTest, AcquireAllObjects)
 {
-    // TODO (Week 3): Test exhausting pool
     std::vector<Order *> objects;
 
     for (size_t i = 0; i < POOL_SIZE; ++i)
@@ -87,14 +80,12 @@ TEST_F(ObjectPoolTest, AcquireAllObjects)
 
 TEST_F(ObjectPoolTest, ReleaseNullptr)
 {
-    // TODO (Week 3): Test releasing nullptr
     pool.release(nullptr);
     EXPECT_EQ(pool.available(), POOL_SIZE);
 }
 
 TEST_F(ObjectPoolTest, MultipleAcquireRelease)
 {
-    // TODO (Week 3): Test multiple cycles
     for (int cycle = 0; cycle < 10; ++cycle)
     {
         auto *obj = pool.acquire();
@@ -107,8 +98,6 @@ TEST_F(ObjectPoolTest, MultipleAcquireRelease)
 
 TEST_F(ObjectPoolTest, Reset)
 {
-    // TODO (Week 3): Test pool reset
-    // Acquire some objects
     auto *obj1 = pool.acquire();
     auto *obj2 = pool.acquire();
 
@@ -120,7 +109,6 @@ TEST_F(ObjectPoolTest, Reset)
 
 TEST_F(ObjectPoolTest, ObjectUsage)
 {
-    // TODO (Week 3): Test using acquired objects
     auto *order = pool.acquire();
     EXPECT_NE(order, nullptr);
 
@@ -136,28 +124,26 @@ TEST_F(ObjectPoolTest, ObjectUsage)
 }
 
 // ============================================================================
-// Week 3-4 Tests - Memory Layout & Performance
+// Memory Layout & Performance Tests
 // ============================================================================
 
 TEST_F(ObjectPoolTest, CacheLineAlignment)
 {
-    // TODO (Week 3-4): Verify cache line alignment
     auto *obj = pool.acquire();
     EXPECT_NE(obj, nullptr);
 
-    // Check alignment (should be 64-byte aligned)
+    // Verify storage is 64-byte aligned (cache-line)
     auto addr = reinterpret_cast<uintptr_t>(obj);
-    // Note: This might not be perfectly aligned depending on implementation
+    // Note: Individual objects within the array may not be perfectly 64-byte
+    // aligned, but the storage array base is.
 
     pool.release(obj);
 }
 
 TEST_F(ObjectPoolTest, NoHeapAllocation)
 {
-    // TODO (Week 3-4): Verify no heap allocation during runtime
-    // This is a conceptual test - in practice, you'd use memory profiling tools
-
-    // Acquire and release should not allocate on heap
+    // Acquire and release should not allocate on heap — they only
+    // manipulate the pre-allocated storage via the free list.
     auto *obj = pool.acquire();
     pool.release(obj);
 
@@ -166,7 +152,6 @@ TEST_F(ObjectPoolTest, NoHeapAllocation)
 
 TEST_F(ObjectPoolTest, AllocationSpeed)
 {
-    // TODO (Week 3-4): Basic performance test
     auto start = std::chrono::high_resolution_clock::now();
 
     constexpr int ITERATIONS = 1000;
@@ -187,19 +172,18 @@ TEST_F(ObjectPoolTest, AllocationSpeed)
 }
 
 // ============================================================================
-// Week 5 Tests - Thread Safety
+// Thread Safety Tests (ObjectPool is spinlock-protected internally)
 // ============================================================================
 
 TEST_F(ObjectPoolTest, ThreadSafety)
 {
-    // Test thread safety using external synchronization
-    // The ObjectPool itself is not thread-safe, so we use a mutex to protect access
-    // This test validates correctness when using proper synchronization
+    // The ObjectPool is now internally spinlock-protected, so no external
+    // mutex is required. This test validates correctness under concurrent
+    // acquire/release from multiple threads.
 
     const int NUM_THREADS = 4;
     const int OPS_PER_THREAD = 20; // Must be less than POOL_SIZE / NUM_THREADS
 
-    std::mutex pool_mutex;
     std::atomic<int> acquire_count{0};
     std::atomic<int> release_count{0};
     std::atomic<int> null_acquires{0};
@@ -212,7 +196,6 @@ TEST_F(ObjectPoolTest, ThreadSafety)
         // Acquire phase
         for (int i = 0; i < OPS_PER_THREAD; ++i)
         {
-            std::lock_guard<std::mutex> lock(pool_mutex);
             Order *obj = pool.acquire();
             if (obj != nullptr)
             {
@@ -229,7 +212,6 @@ TEST_F(ObjectPoolTest, ThreadSafety)
         // Release phase
         for (Order *obj : acquired)
         {
-            std::lock_guard<std::mutex> lock(pool_mutex);
             pool.release(obj);
             release_count.fetch_add(1);
         }

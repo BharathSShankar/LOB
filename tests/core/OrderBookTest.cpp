@@ -31,28 +31,24 @@ protected:
 
 TEST_F(OrderBookTest, EmptyBookHasNoSpread)
 {
-    // TODO (Week 1): Test empty order book
     auto spread = book.get_spread();
     EXPECT_FALSE(spread.has_value());
 }
 
 TEST_F(OrderBookTest, EmptyBookHasNoBestBid)
 {
-    // TODO (Week 1): Test best bid on empty book
     auto best_bid = book.get_best_bid();
     EXPECT_FALSE(best_bid.has_value());
 }
 
 TEST_F(OrderBookTest, EmptyBookHasNoBestAsk)
 {
-    // TODO (Week 1): Test best ask on empty book
     auto best_ask = book.get_best_ask();
     EXPECT_FALSE(best_ask.has_value());
 }
 
 TEST_F(OrderBookTest, AddSingleBuyOrder)
 {
-    // TODO (Week 1): Test adding a buy order
     Order order(1, 1000, 10000, 100, Side::BUY, OrderType::LIMIT);
     auto trades = book.add_order(&order);
 
@@ -65,7 +61,6 @@ TEST_F(OrderBookTest, AddSingleBuyOrder)
 
 TEST_F(OrderBookTest, AddSingleSellOrder)
 {
-    // TODO (Week 1): Test adding a sell order
     Order order(1, 1000, 10100, 100, Side::SELL, OrderType::LIMIT);
     auto trades = book.add_order(&order);
 
@@ -78,7 +73,6 @@ TEST_F(OrderBookTest, AddSingleSellOrder)
 
 TEST_F(OrderBookTest, SpreadCalculation)
 {
-    // TODO (Week 1): Test spread calculation
     Order buy_order(1, 1000, 10000, 100, Side::BUY, OrderType::LIMIT);
     Order sell_order(2, 1001, 10100, 100, Side::SELL, OrderType::LIMIT);
 
@@ -96,7 +90,6 @@ TEST_F(OrderBookTest, SpreadCalculation)
 
 TEST_F(OrderBookTest, SimpleMatch)
 {
-    // TODO (Week 2): Test simple order matching
     Order buy_order(1, 1000, 10000, 100, Side::BUY, OrderType::LIMIT);
     Order sell_order(2, 1001, 10000, 100, Side::SELL, OrderType::LIMIT);
 
@@ -110,7 +103,6 @@ TEST_F(OrderBookTest, SimpleMatch)
 
 TEST_F(OrderBookTest, PartialMatch)
 {
-    // TODO (Week 2): Test partial order matching
     Order buy_order(1, 1000, 10000, 100, Side::BUY, OrderType::LIMIT);
     Order sell_order(2, 1001, 10000, 50, Side::SELL, OrderType::LIMIT);
 
@@ -123,7 +115,6 @@ TEST_F(OrderBookTest, PartialMatch)
 
 TEST_F(OrderBookTest, PriceTimePriority)
 {
-    // TODO (Week 2): Test price-time priority
     // Earlier orders at same price should be matched first
     Order buy1(1, 1000, 10000, 50, Side::BUY, OrderType::LIMIT);
     Order buy2(2, 1001, 10000, 50, Side::BUY, OrderType::LIMIT);
@@ -139,7 +130,6 @@ TEST_F(OrderBookTest, PriceTimePriority)
 
 TEST_F(OrderBookTest, MarketOrderBuy)
 {
-    // TODO (Week 2): Test market buy order
     Order sell_order(1, 1000, 10000, 100, Side::SELL, OrderType::LIMIT);
     Order market_buy(2, 1001, 0, 50, Side::BUY, OrderType::MARKET);
 
@@ -152,7 +142,6 @@ TEST_F(OrderBookTest, MarketOrderBuy)
 
 TEST_F(OrderBookTest, CancelOrder)
 {
-    // TODO (Week 1-2): Test order cancellation
     Order order(1, 1000, 10000, 100, Side::BUY, OrderType::LIMIT);
     book.add_order(&order);
 
@@ -165,7 +154,6 @@ TEST_F(OrderBookTest, CancelOrder)
 
 TEST_F(OrderBookTest, GetMarketDepth)
 {
-    // TODO (Week 1-2): Test market depth retrieval
     std::vector<OrderBook::DepthLevel> bids, asks;
     book.get_market_depth(bids, asks, 5);
 
